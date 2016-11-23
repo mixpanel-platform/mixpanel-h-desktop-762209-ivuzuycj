@@ -7,9 +7,81 @@
     <script src="https://cdn.mxpnl.com/libs/mixpanel-platform/build/mixpanel-platform.v0.latest.min.js"></script>
   </head>
   <body class="mixpanel-platform-body">
-    <h1>Hello, World!</h1>
+    
+    <div class="mixpanel-platform-section">
+      <h1>View Desktop Hotel Confirmation by User Login Status</h1>
+      <div style="clear: both;"></div>
+      <div id="ViewHotelConf" class="report"></div>
+      <h1>Weekly User Registration</h1>
+      <div style="clear: both;"></div>
+      <div id="WUserRegistration" class="report"></div>
+      <h1>Daily Active Users - Unique</h1>
+      <div style="clear: both;"></div>
+      <div id="DAUUnique" class="report"></div>
+     </div>
+    <style>
+    h1 {
+      font-size: 20px;
+      margin: 10px 0;
+    }
+    .report {
+     margin: 15px 0; 
+    }
+    </style>
     <script>
-      // Run queries and display results here
+      var ViewHotelConfLine  = $('#ViewHotelConf').MPChart({chartType: 'line'});
+      var WUserRegLine  = $('#WUserRegistration').MPChart({chartType: 'line'});
+      var DAUUniqueLine  = $('#DAUUnique').MPChart({chartType: 'line'});
+     
+      var segmentViewHotelConfParams = {
+            from: moment().subtract('93', 'days'),
+            to: moment(),
+            type: 'general',
+            unit: 'week',
+            where: 'properties["devicetype"] == "desktop"' ,
+      };
+      
+      var segmentWUserRegParams = {
+            from: moment().subtract('112', 'days'),
+            to: moment(),
+            type: 'general',
+            unit: 'week',
+      };
+      
+      var segmentDAUUniqueParams = {
+            from: moment().subtract('14', 'days'),
+            to: moment(),
+            type: 'unique',
+            unit: 'day',
+      };
+      
+      runQuery();
+       function runQuery() {
+        
+        //View Desktop Hotel Confirmation by User Login Status
+        
+        MP.api.segment('Hotel_Confirmation_Viewed', 'userLogin_status', segmentViewHotelConfParams).done(function(results) {
+            
+            ViewHotelConfLine.MPChart('setData', results)
+        });
+        
+         //Weekly User Registration
+        
+        MP.api.segment('User Registration', 'Mode', segmentWUserRegParams).done(function(results) {
+            
+            WUserRegLine.MPChart('setData', results);
+        });
+        
+        //Daily Active Users - Unique
+        
+        MP.api.segment('Overall Active User', 'campaign', segmentDAUUniqueParams).done(function(results) {
+            
+            DAUUniqueLine.MPChart('setData', results);
+        });
+        
+        
+        }
+
     </script>
   </body>
 </html>
