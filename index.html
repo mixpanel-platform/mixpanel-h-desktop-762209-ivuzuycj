@@ -9,15 +9,15 @@
   <body class="mixpanel-platform-body">
     
     <div class="mixpanel-platform-section">
-      <h1>View Desktop Hotel Confirmation by User Login Status</h1>
+      <h1>Hotel Confirmation Views by User Login Status [Desktop]</h1>
       <div style="clear: both;"></div>
       <div id="ViewHotelConf" class="report"></div>
-      <h1>Weekly User Registration</h1>
+      <h1>Hotel SRP Views by User Login Status [Desktop]</h1>
       <div style="clear: both;"></div>
-      <div id="WUserRegistration" class="report"></div>
-      <h1>Daily Active Users - Unique</h1>
+      <div id="ViewHotelSRP" class="report"></div>
+      <h1>Hotel Detail Views [Desktop]</h1>
       <div style="clear: both;"></div>
-      <div id="DAUUnique" class="report"></div>
+      <div id="ViewHotelDet" class="report"></div>
      </div>
     <style>
     h1 {
@@ -30,53 +30,55 @@
     </style>
     <script>
       var ViewHotelConfLine  = $('#ViewHotelConf').MPChart({chartType: 'line'});
-      var WUserRegLine  = $('#WUserRegistration').MPChart({chartType: 'line'});
-      var DAUUniqueLine  = $('#DAUUnique').MPChart({chartType: 'line'});
+      var ViewHotelSRPLine  = $('#ViewHotelSRP').MPChart({chartType: 'line'});
+      var ViewHotelDetLine  = $('#ViewHotelDet').MPChart({chartType: 'line'});
      
       var segmentViewHotelConfParams = {
             from: moment().subtract('93', 'days'),
             to: moment(),
-            type: 'general',
+            type: 'unique',
             unit: 'week',
             where: 'properties["devicetype"] == "desktop"' ,
       };
       
-      var segmentWUserRegParams = {
-            from: moment().subtract('112', 'days'),
-            to: moment(),
-            type: 'general',
-            unit: 'week',
-      };
-      
-      var segmentDAUUniqueParams = {
-            from: moment().subtract('14', 'days'),
+      var segmentViewHotelSRPParams = {
+            from: moment().subtract('93', 'days'),
             to: moment(),
             type: 'unique',
-            unit: 'day',
+            unit: 'week',
+            where: 'properties["devicetype"] == "desktop"' ,
+      };
+      
+      var segmentViewHotelDetParams = {
+            from: moment().subtract('93', 'days'),
+            to: moment(),
+            type: 'unique',
+            unit: 'week',
+            where: 'properties["devicetype"] == "desktop"' ,
       };
       
       runQuery();
        function runQuery() {
         
-        //View Desktop Hotel Confirmation by User Login Status
+        //Hotel Confirmation Views by User Login Status [Desktop]
         
         MP.api.segment('Hotel_Confirmation_Viewed', 'userLogin_status', segmentViewHotelConfParams).done(function(results) {
             
             ViewHotelConfLine.MPChart('setData', results)
         });
         
-         //Weekly User Registration
+         //Hotel SRP Views by User Login Status [Desktop]
         
-        MP.api.segment('User Registration', 'Mode', segmentWUserRegParams).done(function(results) {
+        MP.api.segment('Hotel_SRP_Viewed', 'userLogin_status', segmentViewHotelSRPParams).done(function(results) {
             
-            WUserRegLine.MPChart('setData', results);
+            ViewHotelSRPLine.MPChart('setData', results);
         });
         
-        //Daily Active Users - Unique
+        //Hotel Detail Views [Desktop]
         
-        MP.api.segment('Overall Active User', 'campaign', segmentDAUUniqueParams).done(function(results) {
+        MP.api.segment('Hotel_Details_Viewed', segmentViewHotelDetParams).done(function(results) {
             
-            DAUUniqueLine.MPChart('setData', results);
+            ViewHotelDetLine.MPChart('setData', results);
         });
         
         
